@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website Monitor</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar">
+
+    <div class="sidebar-logo">
+      <span class="logo-dot"></span>
+      <span>Website</span>
+      <span class="logo-accent">Monitor</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><path d="M3 10.5 10 4l7 6.5M5 9v6.5a.5.5 0 0 0 .5.5H8v-4h4v4h2.5a.5.5 0 0 0 .5-.5V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Dashboard
+      </a>
+      <a href="#sitios" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M3 10h14M10 3a10.6 10.6 0 0 1 0 14M10 3a10.6 10.6 0 0 0 0 14" stroke="currentColor" stroke-width="1.5"/></svg>
+        Websites
+      </a>
+      <a href="#nuevo" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Register
+      </a>
+    </nav>
+
+    <div class="sidebar-stats">
+      <div class="info-group">
+        <div class="info-label">Monitoring</div>
+        <div class="info-value"><span class="pulse-dot"></span>Active</div>
+      </div>
+      <div class="info-group">
+        <div class="info-label">Websites</div>
+        <div class="info-value" id="sidebar-online">0 / 0</div>
+      </div>
+      <div class="info-group">
+        <div class="info-label">Last Check</div>
+        <div class="info-value" id="sidebar-tiempo">--</div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="main">
+
+    <header class="topbar">
+      <div>
+        <h1 class="page-title">Website Monitor</h1>
+        <p class="page-sub">Real-time availability and response time monitoring</p>
+      </div>
+      <div class="topbar-actions">
+        <button id="btn-chequear" class="btn-scan" onclick="chequearTodos()">
+          <svg class="btn-icon" viewBox="0 0 20 20" fill="none"><path d="M3 10a7 7 0 0 1 12-5M17 10a7 7 0 0 1-12 5M15 3v4h-4M5 17v-4h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Check Websites
+        </button>
+      </div>
+    </header>
+
+    <section class="status-banner">
+      <span class="status-dot"></span>
+      <div>
+        <strong>Monitoring Active</strong>
+        <p>Automatic refresh every 60 seconds</p>
+      </div>
+    </section>
+
+    <section class="stats-grid">
+      <article class="stat-card stat-online">
+        <span class="stat-label">Online</span>
+        <div class="stat-num" id="stat-online">0</div>
+      </article>
+      <article class="stat-card stat-offline">
+        <span class="stat-label">Offline</span>
+        <div class="stat-num" id="stat-offline">0</div>
+      </article>
+      <article class="stat-card stat-latency">
+        <span class="stat-label">Average Response</span>
+        <div class="stat-num" id="stat-promedio">-- ms</div>
+      </article>
+      <article class="stat-card stat-total">
+        <span class="stat-label">Total Websites</span>
+        <div class="stat-num" id="stat-total">0</div>
+      </article>
+    </section>
+
+    <section id="sitios" class="table-card">
+      <div class="table-header">
+        <div>
+          <h2>Monitored Websites</h2>
+          <p class="table-subtitle">Current monitored services</p>
+        </div>
+        <span class="badge" id="badge-total">0 Websites</span>
+      </div>
+
+      <div id="estado-chequeo" class="estado-scan oculto">
+        <div class="spinner"></div>
+        <span>Checking websites...</span>
+      </div>
+
+      <div class="tabla-wrap">
+        <table class="tabla" id="tabla-sitios">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Name</th>
+              <th>URL</th>
+              <th>HTTP</th>
+              <th>Latency</th>
+              <th>Uptime</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-body">
+            <tr>
+              <td colspan="7" class="empty-msg">No monitored websites.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="nuevo" class="table-card">
+      <div class="table-header">
+        <div>
+          <h2>Register Website</h2>
+          <p class="table-subtitle">Add a new website to monitor</p>
+        </div>
+      </div>
+
+      <div class="form-agregar">
+        <div class="input-group">
+          <label for="input-nombre">Website Name</label>
+          <input id="input-nombre" class="input" type="text" placeholder="Google">
+        </div>
+        <div class="input-group">
+          <label for="input-url">Website URL</label>
+          <input id="input-url" class="input" type="text" placeholder="https://google.com">
+        </div>
+        <button class="btn-scan" onclick="agregarSitio()">
+          <svg class="btn-icon" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          Register Website
+        </button>
+      </div>
+
+      <p id="msg-agregar" class="msg-form"></p>
+    </section>
+
+  </main>
+
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

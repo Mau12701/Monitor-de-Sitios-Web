@@ -292,7 +292,3 @@ Correo
 mauriescobar127@outlook.com
 
 ---
-
-## Licencia
-
-Este proyecto se distribuye bajo la licencia MIT.
